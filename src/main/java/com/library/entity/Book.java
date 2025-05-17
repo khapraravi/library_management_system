@@ -1,25 +1,38 @@
 package com.library.entity;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
-@Entity
+
+@Document
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Book {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private ObjectId id;
+    @Indexed(unique = true)
+    @NotBlank(message = "title is mandatory")
     private String title;
+    @NotBlank(message = "author is mandatory")
     private String author;
+    @Indexed(unique = true)
+    @NotBlank(message = "isbn is mandatory")
+    @Pattern(
+            regexp = "^IS\\d{2}$",
+            message = "ISBN must start with 'IS' followed by 2 digits, total length 4"
+    )
+    private String isbn;
     private boolean available = true;
-
-    // Getters and Setters
 }
+
+
+
+
